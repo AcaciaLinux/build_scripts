@@ -14,6 +14,14 @@ then
 	exit 1
 fi
 
+mkdir -pv ${ROOTDIR}/{etc,var} ${ROOTDIR}/usr/{bin,lib,sbin}
+for i in bin lib sbin; do
+  ln -sv usr/$i ${ROOTDIR}/$i
+done
+case $(uname -m) in
+  x86_64) mkdir -pv ${ROOTDIR}/lib64 ;;
+esac
+
 mkdir -pv ${ROOTDIR}/{dev,proc,sys,run}
 mknod -m 600 ${ROOTDIR}/dev/console c 5 1
 mknod -m 666 ${ROOTDIR}/dev/null c 1 3
@@ -31,8 +39,8 @@ mkdir -pv ${ROOTDIR}/usr/{,local/}share/man/man{1..8}
 mkdir -pv ${ROOTDIR}/var/{cache,local,log,mail,opt,spool}
 mkdir -pv ${ROOTDIR}/var/lib/{color,misc,locate}
 
-ln -sfv ${ROOTDIR}/run ${ROOTDIR}/var/run
-ln -sfv ${ROOTDIR}/run/lock ${ROOTDIR}/var/lock
+ln -sfv run ${ROOTDIR}/var/run
+ln -sfv run/lock ${ROOTDIR}/var/lock
 
 mkdir -pv ${ROOTDIR}/root
 mkdir -pv ${ROOTDIR}/tmp
